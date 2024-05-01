@@ -6,12 +6,18 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "almasaeed2010/adminlte": "~3.2",
+        "bensampo/laravel-enum": "^6.11",
         "guzzlehttp/guzzle": "^7.2",
+        "jeroennoten/laravel-adminlte": "^3.11",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
-        "laravel/tinker": "^2.8"
+        "laravel/tinker": "^2.8",
+        "laravel/ui": "^4.5",
+        "yoeunes/toastr": "^2.3"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.13",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",

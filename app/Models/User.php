@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\Request;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -19,8 +21,21 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'role_id',
+        'avatar',
         'email',
         'password',
+        'phone',
+        'gender',
+        'publish',
+        'province_id',
+        'district_id',
+        'ward_id',
+        'address',
+        'birthday',
+        'description',
+        'user_agent',
+        'ip'
     ];
 
     /**
@@ -41,5 +56,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'birthday' => 'datetime',
     ];
+
+    // public function adminlte_profile_url()
+    // {
+
+    // }
 }
