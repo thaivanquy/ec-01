@@ -52,7 +52,7 @@
                 <th>{{ __('title.information') }}</th>
                 <th>{{ __('title.address') }}</th>
                 <th>{{ __('title.role') }}</th>
-                <th>{{ __('title.status') }}</th>
+                <th>{{ __('title.publish') }}</th>
                 <th>{{ __('title.action') }}</th>
               </tr>
             </thead>

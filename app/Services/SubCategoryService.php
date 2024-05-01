@@ -3,34 +3,38 @@
 namespace App\Services;
 
 use App\Services\Traits\ServiceSingleton;
-use App\Models\Category;
+use App\Models\SubCategory;
 use DB;
-use App\Enums\CommonEnum;
 
-class CategoryService
+class SubCategoryService
 {
     use ServiceSingleton;
 
     public function getList($params)
     {
-        $categories = Category::when(!empty($params['keyword']), function ($q) use ($params) {
+        $subcategories = SubCategory::when(!empty($params['keyword']), function ($q) use ($params) {
             $q->where('name', 'like', '%' . $params['keyword'] . '%');
         })
         ->when(!empty($params['status']), function ($q) use ($params) {
             $q->where('status', $params['status']);
         })
+        ->when(!empty($params['category_id']), function ($q) use ($params) {
+            $q->whereHas('category', function ($query) use ($params) {
+                $query->where('category_id', $params['category_id']);
+            });
+        })
         ->orderBy('created_at', 'desc')
         ->paginate($params['per_page'] ?? null, ['*'], 'page', $params['page'] ?? null);
     
-        return $categories;
+        return $subcategories;
     }
 
-    public function storeCategory($params)
+    public function storeSubCategory($params)
     {
         DB::beginTransaction();
 
         try {
-            Category::create($params);
+            SubCategory::create($params);
 
             DB::commit();
 
@@ -40,12 +44,12 @@ class CategoryService
         }
     }
 
-    public function updateCategory($params, $categoryInfo)
+    public function updateSubCategory($params, $subcategoryInfo)
     {
         DB::beginTransaction();
 
         try {
-            Category::where('id', $categoryInfo->id)->update($params);
+            SubCategory::where('id', $subcategoryInfo->id)->update($params);
 
             DB::commit();
 
@@ -55,12 +59,12 @@ class CategoryService
         }
     }
 
-    public function deleteCategory($categoryInfo)
+    public function deleteSubCategory($subcategoryInfo)
     {
         DB::beginTransaction();
 
         try {
-            Category::where('id', $categoryInfo->id)->delete();
+            SubCategory::where('id', $subcategoryInfo->id)->delete();
 
             DB::commit();
 
@@ -68,10 +72,5 @@ class CategoryService
             DB::rollBack();
             throw $ex;
         }
-    }
-
-    public function getNameCategory()
-    {
-        return Category::orderBy('name', 'ASC')->get();
     }
 }

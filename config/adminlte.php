@@ -389,6 +389,13 @@ return [
         //     'url' => '#',
         // ],
         [
+            'text'        => 'Dashboard',
+            'key'         => 'dashboard',
+            'url'         => 'backend',
+            'icon'        => 'fas fa-tachometer-alt',
+            'active'      => ['backend/dashboard', 'backend/dashboard*'],
+        ],
+        [
             'text'        => 'Users',
             'key'         => 'users',
             'url'         => 'backend/users',
@@ -401,6 +408,20 @@ return [
             'url'         => 'backend/categories',
             'icon'        => 'fa fa-tasks',
             'active'      => ['backend/categories', 'backend/categories*'],
+        ],
+        [
+            'text'        => 'Sub-Categories',
+            'key'         => 'subcategories',
+            'url'         => 'backend/sub-categories',
+            'icon'        => 'fa fa-tasks',
+            'active'      => ['backend/subcategories', 'backend/subcategories*'],
+        ],
+        [
+            'text'        => 'Brands',
+            'key'         => 'brands',
+            'url'         => 'backend/brands',
+            'icon'        => 'fa fa-tag',
+            'active'      => ['backend/brands', 'backend/brands*'],
         ],
     ],
 

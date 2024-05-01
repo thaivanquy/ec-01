@@ -1,17 +1,17 @@
 @extends('adminlte::page')
 
 @section('content')
-<h3 class="pt-2 pl-2">{{ __('title.category_management') }}</h3>
+<h3 class="pt-2 pl-2">{{ __('title.sub_category_management') }}</h3>
 @include('layouts.breadcumb', [
     'items' => [
         [
-            'title' => __('title.category_list'),
+            'title' => __('title.sub_category_list'),
             'url' => 'javascript:void();',
         ],
     ],
 ])
 <div class="card-body p-0">
-    <form action="{{ route('backend.categories.index') }}" method="GET" id="formSubmit">
+    <form action="{{ route('backend.subcategories.index') }}" method="GET" id="formSubmit">
         <div class="row pb-3">
             <div class="col-sm-2">
                 <select class="form-control changeSubmit" id="perpage" name="per_page">
@@ -29,6 +29,14 @@
                 </select>
             </div>
             <div class="col-sm-2">
+                <select class="form-control changeSubmit" id="category_id" name="category_id">
+                    <option value="" selected>{{ 'Choose' . ' ' . __('title.category') }}</option>
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->id }}" {{ request()->input('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-sm-2">
                 <div class="input-group">
                     <input type="search" class="form-control" placeholder="Type your keywords here" value="{{ request()->input('keyword') }}" name="keyword">
                     <div class="input-group-append">
@@ -38,8 +46,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6 d-flex justify-content-end">
-                <a href="{{ route('backend.categories.create') }}" class="btn btn-success">Add New</i></a>
+            <div class="col-sm-4 d-flex justify-content-end">
+                <a href="{{ route('backend.subcategories.create') }}" class="btn btn-success">Add New</i></a>
             </div>
         </div>
     </form>
@@ -49,35 +57,39 @@
               <tr class="text-center">
                 <th>{{ __('title.id') }}</th>
                 <th>{{ __('title.name') }}</th>
+                <th>{{ __('title.category') }}</th>
                 <th>{{ __('title.status') }}</th>
                 <th>{{ __('title.action') }}</th>
               </tr>
             </thead>
             <tbody>
-                @if (count($categories) > 0)
-                    @foreach($categories as $key => $category)
+                @if (count($subCategories) > 0)
+                    @foreach($subCategories as $key => $subCategory)
                         <tr class="text-center">
                             <td class="align-middle">
-                                {{ $category->id }}
+                                {{ $subCategory->id }}
                             </td>
                             <td class="align-middle">
-                                {{ $category->name }}
+                                {{ $subCategory->name }}
                             </td>
                             <td class="align-middle">
-                                <span class="badge badge-sm {{ ($category->status == \App\Enums\CommonEnum::Active) ? 'bg-gradient-success' : 'bg-gradient-danger' }}">
-                                    {{ ucfirst(config('common.status')[$category->status]) }}
+                                {{ $subCategory->category->name }}
+                            </td>
+                            <td class="align-middle">
+                                <span class="badge badge-sm {{ ($subCategory->status == \App\Enums\CommonEnum::Active) ? 'bg-gradient-success' : 'bg-gradient-danger' }}">
+                                    {{ ucfirst(config('common.status')[$subCategory->status]) }}
                                 </span>
                             </td>
                             <td class="align-middle">
-                                <a href="{{ route('backend.categories.detail', $category->id) }}" class="btn btn-sm btn-info mr-2">Detail</a>
-                                <a href="{{ route('backend.categories.edit', $category->id) }}" class="btn btn-sm btn-warning mr-2">Edit</a>
-                                <a href="javascript:;" class="btn btn-sm btn-danger" id="btnDelete" data-id="{{ $category->id }}">Delete</a>
+                                <a href="{{ route('backend.subcategories.detail', $subCategory->id) }}" class="btn btn-sm btn-info mr-2">Detail</a>
+                                <a href="{{ route('backend.subcategories.edit', $subCategory->id) }}" class="btn btn-sm btn-warning mr-2">Edit</a>
+                                <a href="javascript:;" class="btn btn-sm btn-danger" id="btnDelete" data-id="{{ $subCategory->id }}">Delete</a>
                             </td>
                         </tr>
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="4" class="text-center bg-white">
+                        <td colspan="5" class="text-center bg-white">
                             {{ __('message.no_data') }}
                         </td>
                     </tr>
@@ -85,7 +97,7 @@
             </tbody>
         </table>
         <div class="d-flex justify-content-center mt-4">
-            {{ $categories->onEachSide(2)->links('layouts.pagination') }}
+            {{ $subCategories->onEachSide(2)->links('layouts.pagination') }}
         </div>
     </div>
 </div>
@@ -110,7 +122,7 @@
         //Delete Category
         $(document).on('click', '#btnDelete', function(e) {
             let _this = $(this);
-            let categoryID = _this.attr('data-id');
+            let subCategoryID = _this.attr('data-id');
 
             Swal.fire({
                 icon: "success",
@@ -124,9 +136,9 @@
             }).then(function (result) {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "{{ route('backend.categories.delete', ['categoryInfo' => ':categoryID']) }}".replace(':categoryID', categoryID),
+                        url: "{{ route('backend.subcategories.delete', ['subcategoryInfo' => ':subCategoryID']) }}".replace(':subCategoryID', subCategoryID),
                         type: 'POST',
-                        data: categoryID,
+                        data: subCategoryID,
                         success: function success(res) {
                             Swal.fire({
                                 title: "Deleted!",

@@ -1,17 +1,17 @@
 @extends('adminlte::page')
 
 @section('content')
-<h3 class="pt-2 pl-2">{{ __('title.category_management') }}</h3>
+<h3 class="pt-2 pl-2">{{ __('title.brand_management') }}</h3>
 @include('layouts.breadcumb', [
     'items' => [
         [
-            'title' => __('title.category_list'),
+            'title' => __('title.brand_list'),
             'url' => 'javascript:void();',
         ],
     ],
 ])
 <div class="card-body p-0">
-    <form action="{{ route('backend.categories.index') }}" method="GET" id="formSubmit">
+    <form action="{{ route('backend.brands.index') }}" method="GET" id="formSubmit">
         <div class="row pb-3">
             <div class="col-sm-2">
                 <select class="form-control changeSubmit" id="perpage" name="per_page">
@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div class="col-sm-6 d-flex justify-content-end">
-                <a href="{{ route('backend.categories.create') }}" class="btn btn-success">Add New</i></a>
+                <a href="{{ route('backend.brands.create') }}" class="btn btn-success">Add New</i></a>
             </div>
         </div>
     </form>
@@ -54,24 +54,24 @@
               </tr>
             </thead>
             <tbody>
-                @if (count($categories) > 0)
-                    @foreach($categories as $key => $category)
+                @if (count($brands) > 0)
+                    @foreach($brands as $key => $brand)
                         <tr class="text-center">
                             <td class="align-middle">
-                                {{ $category->id }}
+                                {{ $brand->id }}
                             </td>
                             <td class="align-middle">
-                                {{ $category->name }}
+                                {{ $brand->name }}
                             </td>
                             <td class="align-middle">
-                                <span class="badge badge-sm {{ ($category->status == \App\Enums\CommonEnum::Active) ? 'bg-gradient-success' : 'bg-gradient-danger' }}">
-                                    {{ ucfirst(config('common.status')[$category->status]) }}
+                                <span class="badge badge-sm {{ ($brand->status == \App\Enums\CommonEnum::Active) ? 'bg-gradient-success' : 'bg-gradient-danger' }}">
+                                    {{ ucfirst(config('common.status')[$brand->status]) }}
                                 </span>
                             </td>
                             <td class="align-middle">
-                                <a href="{{ route('backend.categories.detail', $category->id) }}" class="btn btn-sm btn-info mr-2">Detail</a>
-                                <a href="{{ route('backend.categories.edit', $category->id) }}" class="btn btn-sm btn-warning mr-2">Edit</a>
-                                <a href="javascript:;" class="btn btn-sm btn-danger" id="btnDelete" data-id="{{ $category->id }}">Delete</a>
+                                <a href="{{ route('backend.brands.detail', $brand->id) }}" class="btn btn-sm btn-info mr-2">Detail</a>
+                                <a href="{{ route('backend.brands.edit', $brand->id) }}" class="btn btn-sm btn-warning mr-2">Edit</a>
+                                <a href="javascript:;" class="btn btn-sm btn-danger" id="btnDelete" data-id="{{ $brand->id }}">Delete</a>
                             </td>
                         </tr>
                     @endforeach
@@ -85,7 +85,7 @@
             </tbody>
         </table>
         <div class="d-flex justify-content-center mt-4">
-            {{ $categories->onEachSide(2)->links('layouts.pagination') }}
+            {{ $brands->onEachSide(2)->links('layouts.pagination') }}
         </div>
     </div>
 </div>
@@ -110,7 +110,7 @@
         //Delete Category
         $(document).on('click', '#btnDelete', function(e) {
             let _this = $(this);
-            let categoryID = _this.attr('data-id');
+            let brandID = _this.attr('data-id');
 
             Swal.fire({
                 icon: "success",
@@ -124,9 +124,9 @@
             }).then(function (result) {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "{{ route('backend.categories.delete', ['categoryInfo' => ':categoryID']) }}".replace(':categoryID', categoryID),
+                        url: "{{ route('backend.brands.delete', ['brandInfo' => ':brandID']) }}".replace(':brandID', brandID),
                         type: 'POST',
-                        data: categoryID,
+                        data: brandID,
                         success: function success(res) {
                             Swal.fire({
                                 title: "Deleted!",

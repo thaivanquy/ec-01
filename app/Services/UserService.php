@@ -26,6 +26,7 @@ class UserService
         ->when(!empty($params['role_id']), function ($q) use ($params) {
             $q->where('role_id', $params['role_id']);
         })
+        ->orderBy('created_at', 'desc')
         ->paginate($params['per_page'] ?? null, ['*'], 'page', $params['page'] ?? null);
     
         return $users;

@@ -7,6 +7,8 @@ use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\LocationController;
 use App\Http\Controllers\Backend\SlugController;
+use App\Http\Controllers\Backend\SubCategoryController;
+use App\Http\Controllers\Backend\BrandController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,6 +64,32 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['web',
             Route::get('/edit/{categoryInfo}', [CategoryController::class, 'edit'])->name('edit');
             Route::post('/update/{categoryInfo}', [CategoryController::class, 'update'])->name('update');
             Route::post('/delete/{categoryInfo}', [CategoryController::class, 'delete'])->name('delete');
+        });
+
+        Route::group([
+            'prefix' => '/sub-categories',
+            'as' => 'subcategories.'
+        ], function () {
+            Route::get('/', [SubCategoryController::class, 'index'])->name('index');
+            Route::get('/create', [SubCategoryController::class, 'create'])->name('create');
+            Route::post('/store', [SubCategoryController::class, 'store'])->name('store');
+            Route::get('/detail/{subcategoryInfo}', [SubCategoryController::class, 'detail'])->name('detail');
+            Route::get('/edit/{subcategoryInfo}', [SubCategoryController::class, 'edit'])->name('edit');
+            Route::post('/update/{subcategoryInfo}', [SubCategoryController::class, 'update'])->name('update');
+            Route::post('/delete/{subcategoryInfo}', [SubCategoryController::class, 'delete'])->name('delete');
+        });
+
+        Route::group([
+            'prefix' => '/brands',
+            'as' => 'brands.'
+        ], function () {
+            Route::get('/', [BrandController::class, 'index'])->name('index');
+            Route::get('/create', [BrandController::class, 'create'])->name('create');
+            Route::post('/store', [BrandController::class, 'store'])->name('store');
+            Route::get('/detail/{brandInfo}', [BrandController::class, 'detail'])->name('detail');
+            Route::get('/edit/{brandInfo}', [BrandController::class, 'edit'])->name('edit');
+            Route::post('/update/{brandInfo}', [BrandController::class, 'update'])->name('update');
+            Route::post('/delete/{brandInfo}', [BrandController::class, 'delete'])->name('delete');
         });
     
         Route::get('location', [LocationController::class, 'index'])->name('location');

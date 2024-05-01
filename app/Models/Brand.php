@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Category extends Model
+class Brand extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -14,12 +14,5 @@ class Category extends Model
         'name',
         'slug',
         'status',
-        'image',
     ];
-
-    public function subcategories()
-    {
-        return $this->hasMany(SubCategory::class);
-    }
-
 }

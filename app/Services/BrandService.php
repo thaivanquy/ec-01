@@ -3,17 +3,17 @@
 namespace App\Services;
 
 use App\Services\Traits\ServiceSingleton;
-use App\Models\Category;
 use DB;
 use App\Enums\CommonEnum;
+use App\Models\Brand;
 
-class CategoryService
+class BrandService
 {
     use ServiceSingleton;
 
     public function getList($params)
     {
-        $categories = Category::when(!empty($params['keyword']), function ($q) use ($params) {
+        $brands = Brand::when(!empty($params['keyword']), function ($q) use ($params) {
             $q->where('name', 'like', '%' . $params['keyword'] . '%');
         })
         ->when(!empty($params['status']), function ($q) use ($params) {
@@ -22,15 +22,15 @@ class CategoryService
         ->orderBy('created_at', 'desc')
         ->paginate($params['per_page'] ?? null, ['*'], 'page', $params['page'] ?? null);
     
-        return $categories;
+        return $brands;
     }
 
-    public function storeCategory($params)
+    public function storeBrand($params)
     {
         DB::beginTransaction();
 
         try {
-            Category::create($params);
+            Brand::create($params);
 
             DB::commit();
 
@@ -40,12 +40,12 @@ class CategoryService
         }
     }
 
-    public function updateCategory($params, $categoryInfo)
+    public function updateBrand($params, $brandInfo)
     {
         DB::beginTransaction();
 
         try {
-            Category::where('id', $categoryInfo->id)->update($params);
+            Brand::where('id', $brandInfo->id)->update($params);
 
             DB::commit();
 
@@ -55,12 +55,12 @@ class CategoryService
         }
     }
 
-    public function deleteCategory($categoryInfo)
+    public function deleteBrand($brandInfo)
     {
         DB::beginTransaction();
 
         try {
-            Category::where('id', $categoryInfo->id)->delete();
+            Brand::where('id', $brandInfo->id)->delete();
 
             DB::commit();
 
@@ -68,10 +68,5 @@ class CategoryService
             DB::rollBack();
             throw $ex;
         }
-    }
-
-    public function getNameCategory()
-    {
-        return Category::orderBy('name', 'ASC')->get();
     }
 }
