@@ -414,7 +414,7 @@ return [
             'key'         => 'subcategories',
             'url'         => 'backend/sub-categories',
             'icon'        => 'fa fa-tasks',
-            'active'      => ['backend/subcategories', 'backend/subcategories*'],
+            'active'      => ['backend/sub-categories', 'backend/sub-categories*'],
         ],
         [
             'text'        => 'Brands',
@@ -422,6 +422,13 @@ return [
             'url'         => 'backend/brands',
             'icon'        => 'fa fa-tag',
             'active'      => ['backend/brands', 'backend/brands*'],
+        ],
+        [
+            'text'        => 'Products',
+            'key'         => 'products',
+            'url'         => 'backend/products',
+            'icon'        => 'fa fa-shopping-bag',
+            'active'      => ['backend/products', 'backend/products*'],
         ],
     ],
 
@@ -542,6 +549,21 @@ return [
                     'type' => 'css',
                     'asset' => true,
                     'location' => '//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css',
+                ],
+            ],
+        ],
+        'Niceselect' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/js/jquery.nice-select.min.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.min.css',
                 ],
             ],
         ],

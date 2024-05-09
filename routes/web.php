@@ -9,6 +9,7 @@ use App\Http\Controllers\Backend\LocationController;
 use App\Http\Controllers\Backend\SlugController;
 use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\BrandController;
+use App\Http\Controllers\Backend\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -90,6 +91,19 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['web',
             Route::get('/edit/{brandInfo}', [BrandController::class, 'edit'])->name('edit');
             Route::post('/update/{brandInfo}', [BrandController::class, 'update'])->name('update');
             Route::post('/delete/{brandInfo}', [BrandController::class, 'delete'])->name('delete');
+        });
+
+        Route::group([
+            'prefix' => '/products',
+            'as' => 'products.'
+        ], function () {
+            Route::get('/', [ProductController::class, 'index'])->name('index');
+            Route::get('/create', [ProductController::class, 'create'])->name('create');
+            Route::post('/store', [ProductController::class, 'store'])->name('store');
+            Route::get('/detail/{brandInfo}', [ProductController::class, 'detail'])->name('detail');
+            Route::get('/edit/{brandInfo}', [ProductController::class, 'edit'])->name('edit');
+            Route::post('/update/{brandInfo}', [ProductController::class, 'update'])->name('update');
+            Route::post('/delete/{brandInfo}', [ProductController::class, 'delete'])->name('delete');
         });
     
         Route::get('location', [LocationController::class, 'index'])->name('location');

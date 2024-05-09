@@ -48,4 +48,10 @@ return [
     'brand_detail' => 'Brand Detail',
     'brand_edit' => 'Brand Edit',
     'publish' => 'Publish',
+    'number_of_subcategories' => 'Number of Sub Categories',
+    'product_management' => 'Product Management',
+    'product_list' => 'Product List',
+    'product_create' => 'Product Create',
+    'product_detail' => 'Product Detail',
+    'product_edit' => 'Product Edit',
 ];
