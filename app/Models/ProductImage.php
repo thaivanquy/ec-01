@@ -6,17 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class AttributeValues extends Model
+class ProductImage extends Model
 {
     use HasFactory, SoftDeletes;
-    
-    protected $fillable = [
-        'attribute_id',
-        'value',
-    ];
 
-    public function attribute()
-    {
-        return $this->belongsTo(Attributes::class);
-    }
+    protected $fillable = [
+        'product_id',
+        'image',
+        'sort_order',
+    ];
 }

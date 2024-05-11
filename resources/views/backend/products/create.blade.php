@@ -40,24 +40,11 @@
                                 <span class="text-info">Select the value of the attribute.(Enter 2 characters to search)</span>
                             </div>
                         </div>
-                        <div class="row mt-2">
-                            <div class="col-md-3">
-                                <select name="" id="" class="float-none">
-                                    <option value="">Please Select Attributes</option>
-                                    <option value="">Color</option>
-                                    <option value="">Size</option>
-                                </select>
-                            </div>
-                            <div class="col-md-8">
-                                <input type="text" disabled class="form-control">
-                            </div>
-                            <div class="col-md-1">
-                                <button type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
-                            </div>
+                        <div class="attribute-body">
                         </div>
                         <div class="row mt-4">
-                            <div class="col-md-12">
-                                <button type="button" class="btn btn-outline-info px-5">Add New Attribute.</button>
+                            <div class="col-md-12 attribute-foot">
+                                <button type="button" class="btn btn-outline-info px-5 btn-add-attribute">Add New Attribute.</button>
                             </div>
                         </div>
                     </div>
@@ -107,11 +94,9 @@
             
         });
 
-        $('select').niceSelect();
-
+        //Turn On Atrribute
         if ($('.turnOnAttribute').length) {
             $(document).on('change', '.turnOnAttribute', function(e){
-                console.log('', $('.turnOnAttribute'))
                 if ($('.turnOnAttribute:checked').length !== 0) {
                     $('.attribute-wrapper').removeAttr('hidden');
                 } else {
@@ -119,5 +104,125 @@
                 }
             });
         }
+
+        const attributes = @json($attributes);
+        // Button add Atrribute
+        if ($('.btn-add-attribute').length) {
+            $(document).on('click', '.btn-add-attribute', function(e) {
+                let html = renderHTML(attributes);
+                $('.attribute-body').append(html);
+                $(this).prop("disabled", true);
+                disabledChooseAttributed();
+                removeButtonAttribute(attributes);
+            });
+        }
+
+        const renderHTML = (attributes) => {
+            let html = `
+                <div class="row my-3 attribute-item">
+                    <div class="col-md-3">
+                        <select name="" id="" class="float-none choose-attribute niceSelect">
+                            <option value="">Please Select Attributes</option>`;
+                attributes.forEach(function (attribute) {
+                    html += `<option value="${attribute.id}">${attribute.name}</option>`
+                });
+            html += `
+                        </select>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" disabled class="form-control">
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-danger btn-delete-attribute"><i class="fa fa-trash"></i></button>
+                    </div>
+                </div>`;
+            return html;
+        };
+
+        // The event change select option then allow add extra atribute
+        $(document).on('change', '.choose-attribute', function(e){
+            let _this = $(this);
+            let attributeId = _this.val();
+            if (attributeId != '') {
+                _this.parents('.col-md-3').siblings('.col-md-8').html(select2Attribute(attributeId));
+                $('.selectAttribute').each(function() {
+                    getSelect2($(this));
+                });
+            } else {
+                _this.parents('.col-md-3').siblings('.col-md-8').html('<input type="text" disabled="" class="form-control">');
+            }
+            disabledChooseAttributed();
+        });
+
+        //The event delete attribute
+        $(document).on('click', '.btn-delete-attribute', function(e){
+            let _this = $(this);
+            _this.parents('.attribute-item').remove();
+            removeButtonAttribute(attributes);
+        });
+        
+        const disabledChooseAttributed = () => {
+            let selectedValues = [];
+            $('.choose-attribute').each(function(e) {
+                let _this = $(this);
+                let selected = _this.find('option:selected').val();
+                if (selected != "") {
+                    selectedValues.push(selected);
+                }
+            });
+
+            selectedValues.forEach(function(e) {
+                $('.choose-attribute').find(`option[value="${e}"]`).prop('disabled', true);
+            });
+
+            $('.niceSelect').niceSelect('destroy'); 
+            $('.niceSelect').niceSelect(); 
+        };
+
+        //Check if item of attribute > attributes in databse then remove button add attribute
+        const removeButtonAttribute = (attributes) => {
+            let attributeItem = $('.attribute-item').length;
+            if (attributeItem >= attributes.length) {
+                $('.btn-add-attribute').remove();
+            } else {
+                $('.attribute-foot').html('<button type="button" class="btn btn-outline-info px-5 btn-add-attribute">Add New Attribute.</button>');
+            }
+        };
+
+        //The event wap input to select2 multiple
+        const select2Attribute = (attributeId) => {
+            let html = `<select class="selectAttribute form-control" name="attribute[${attributeId}][]" multiple data-attr-id="${attributeId}"></select>`
+
+            return html;
+        };
+        
+        const getSelect2 = (object) => {
+            let data = {
+                'attributeId': object.attr('data-attr-id')
+            }
+            $(object).select2({
+                minimumInputLength: 1,
+                placeholder: 'Enter at least one characters to search',
+                ajax: {
+                    url: "{{ route('backend.attribute') }}",
+                    type: 'GET',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            keyword: params.term,
+                            option: data,
+                        }
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: data.items
+                        }
+                    },
+                    cache: true
+                }
+            });
+        };
+
     </script>
 @endsection

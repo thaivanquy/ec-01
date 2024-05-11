@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card card-info">
-                <div class="card-header text-center fw-bold">EC01 - WELCOME!!!</div>
+                <div class="card-header text-center fw-bold">LOGIN</div>
 
                 <div class="card-body">
                         <form method="POST" action="{{ route('backend.processLogin') }}">

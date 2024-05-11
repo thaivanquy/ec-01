@@ -10,6 +10,7 @@ use App\Http\Controllers\Backend\SlugController;
 use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\BrandController;
 use App\Http\Controllers\Backend\ProductController;
+use App\Http\Controllers\Backend\AttributeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -108,6 +109,7 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['web',
     
         Route::get('location', [LocationController::class, 'index'])->name('location');
         Route::get('slug', [SlugController::class, 'index'])->name('slug');
+        Route::get('attribute', [AttributeController::class, 'index'])->name('attribute');
         
     });
 
