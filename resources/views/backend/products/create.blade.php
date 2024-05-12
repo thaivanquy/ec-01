@@ -22,6 +22,68 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
+                            <h5>Product Information</h5>
+                            <hr/>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{ __('title.title') }} <span class="text-danger">(*)</span></label>
+                                <input type="text" class="form-control @error('title') is-invalid @enderror" name="title" id="title" value="{{ old('title') }}">
+                                @error('title')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{ __('title.slug') }} <span class="text-danger">(*)</span></label>
+                                <input type="text" class="form-control @error('slug') is-invalid @enderror" name="slug" id="slug" value="{{ old('slug') }}" readonly>
+                                @error('slug')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{ __('title.short_description') }}</label>
+                                <textarea class="form-control @error('short_description') is-invalid @enderror summernote" name="short_description" id="short_description">
+                                    {{ old('short_description') }}
+                                </textarea>
+                                @error('short_description')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{ __('title.description') }}</label>
+                                <textarea class="form-control @error('description') is-invalid @enderror summernote" name="description" id="description">
+                                    {{ old('description') }}
+                                </textarea>
+                                @error('description')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
                             <h5>Product Attributes</h5>
                             <span class="font-italic">Allows you to sell products with different attributes, for example clothes in different <strong class="text-danger">colors</strong> and <strong class="text-danger">sizes</strong>. Each attribute will be a line in the version list below.</span>
                             <hr/>
@@ -50,9 +112,10 @@
                     </div>
                 </div>
             </div>
+            <div class="table-attribute"></div>
         </div>
     </div>
-    <div>
+    <div class="row ml-1">
         <a href="{{ route('backend.products.index') }}" class="btn btn-sm bg-navy mr-2">Back</a>
         <button class="btn btn-sm btn-success mr-2" type="submit">{{ __('title.save') }}</button>
         <button class="btn btn-sm bg-teal" type="submit" name="action" value="save_and_new">Save and New</button>
@@ -66,6 +129,10 @@
 @endsection
 @section('js')
     <script type="text/javascript">
+        $('.summernote').summernote({
+            height: 300,
+        });
+        const noImg = "{{ Vite::asset('resources/images/noimage.jpg') }}"
         $.ajaxSetup({
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
@@ -159,6 +226,7 @@
             let _this = $(this);
             _this.parents('.attribute-item').remove();
             removeButtonAttribute(attributes);
+            createListAtrribute();
         });
         
         const disabledChooseAttributed = () => {
@@ -191,7 +259,7 @@
 
         //The event wap input to select2 multiple
         const select2Attribute = (attributeId) => {
-            let html = `<select class="selectAttribute form-control" name="attribute[${attributeId}][]" multiple data-attr-id="${attributeId}"></select>`
+            let html = `<select class="selectAttribute form-control attribute-${attributeId}" name="attribute[${attributeId}][]" multiple data-attr-id="${attributeId}"></select>`
 
             return html;
         };
@@ -224,5 +292,90 @@
             });
         };
 
+        // The event take all value of the attribute
+        $(document).on('change', '.selectAttribute', function(e){
+            createListAtrribute();
+        });
+
+        const createListAtrribute = () => {
+            let attributes = [];
+            let attributeTitle = [];
+            $('.attribute-item').each(function () {
+                let _this = $(this);
+                let attributeId = _this.find('.choose-attribute option:selected').val();
+                let attributeText = _this.find('.choose-attribute option:selected').text();
+                let attributeValue = $(`.attribute-${attributeId}`).select2('data');
+
+                const attrVals = attributeValue.map(item => ({ [attributeText]: item.text }));
+                attributeTitle.push(attributeText);
+                attributes.push(attrVals);
+            });
+            
+            if (attributes.length > 0) {
+                attributes = attributes.reduce(
+                    (a,b) => a.flatMap(d => b.map(e => ({...d, ...e})))
+                )
+                $('.table-attribute').prop('hidden', false).html(renderListAttribute(attributes, attributeTitle));
+            } else {
+                $('.table-attribute').prop('hidden', true).html('');
+            }            
+        };
+
+        //Render list attribute value
+        const renderListAttribute = (attributes, attributeTitle) => {
+            let html = `<div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>List Product Attributes</h5>
+                            <div class="table-full-width table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th>{{ __('title.image') }}</th>`
+                                    attributeTitle.forEach(function(attr){
+                                        html +=`<th>${attr}</th>`
+                                    });
+                                    html +=`<th>Quantity</th>
+                                            <th>Price</th>
+                                            <th>SKU</th>
+                                            <th>Barcode</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>`
+                                    attributes.forEach(function(attribute) {
+                                        html +=`<tr class="text-center">
+                                                    <td class="align-middle">
+                                                        <img src="${noImg}" alt="no-img" width="50" height="50">
+                                                    </td>`
+                                                $.each(attribute, function(key, value) {
+                                                    html +=`<td class="align-middle">
+                                                            ${value}
+                                                            </td>`
+                                                })
+                                            html +=`<td class="align-middle">
+                                                        <input type="number" class="form-control" name="" id="">
+                                                    </td>
+                                                    <td class="align-middle">
+                                                        <input type="number" class="form-control" name="" id="">
+                                                    </td>
+                                                    <td class="align-middle">
+                                                        <input type="text" class="form-control" name="" id="">
+                                                    </td>
+                                                    <td class="align-middle">
+                                                        <input type="text" class="form-control" name="" id="">
+                                                    </td>
+                                                </tr>`
+                                    });
+                                       
+                                    html +=`</tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+            return html;
+        };
     </script>
 @endsection

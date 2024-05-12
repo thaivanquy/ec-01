@@ -54,4 +54,7 @@ return [
     'product_create' => 'Product Create',
     'product_detail' => 'Product Detail',
     'product_edit' => 'Product Edit',
+    'image' => 'Image',
+    'title' => 'Title',
+    'short_description' => 'Short Description',
 ];
