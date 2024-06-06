@@ -20,4 +20,7 @@ final class CommonEnum extends Enum
 
     const Inpublish = 0;
     const Publish = 1;
+
+    const No = 0;
+    const Yes = 1;
 }

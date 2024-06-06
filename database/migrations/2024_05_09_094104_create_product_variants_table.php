@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->string('sku');
-            $table->string('barcode')->nullable();
             $table->integer('price');
             $table->string('image');
             $table->boolean('publish')->default(1);

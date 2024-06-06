@@ -52,7 +52,7 @@
                                     <option value="">[Choose Category]</option>
                                     @if ($categories->isNotEmpty())
                                         @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}" {{ old('status') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                         @endforeach
                                     @endif
                                 </select>

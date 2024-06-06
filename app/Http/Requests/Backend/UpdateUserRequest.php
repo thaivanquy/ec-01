@@ -37,7 +37,7 @@ class UpdateUserRequest extends FormRequest
             'email.unique' => __('validation.unique'),
             'name.required' => __('validation.required'),
             'name.string' => __('validation.string'),
-            'name.max' => __('validation.max'),
+            'name.max' => __('validation.max.string'),
             'role_id.required' => __('validation.required'),
             'role_id.integer' => __('validation.integer'),
             'role_id.gt' => __('validation.gt'),

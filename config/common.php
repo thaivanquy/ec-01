@@ -13,5 +13,13 @@ return [
     'status' => [
         1 => 'active',
         2 => 'inactive',
-    ]
+    ],
+    'publish' => [
+        0 => 'inpublish',
+        1 => 'publish',
+    ],
+    'featured' => [
+        0 => 'no',
+        1 => 'yes',
+    ],
 ];

@@ -141,4 +141,37 @@ class SubCategoryController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function getSubCategoriesByCategoryId(Request $request)
+    {
+        try {
+            $params = [
+                'category_id' => $request->category_id,
+            ];
+
+            $subCategories = SubCategoryService::getInstance()->getSubCategoriesByCategoryId($params);
+            $html = $this->renderHtmlSubCategories($subCategories);
+
+            return response()->json([
+                'message' => 'Success',
+                'data' => $html
+            ], Response::HTTP_OK);
+        } catch (\Exception $ex) {
+            throw $ex;
+
+            response()->json([
+                'message' => 'Error'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function renderHtmlSubCategories($subCategories, $root = '[Choose Sub Category]')
+    {
+        $html = '<option value="">' . $root . '</option>';
+        foreach ($subCategories as $subCategory) {
+            $html .= '<option value="' . $subCategory->id . '">' . $subCategory->name . '</option>';
+        }
+
+        return $html;
+    }
 }

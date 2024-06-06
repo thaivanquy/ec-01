@@ -73,4 +73,11 @@ class SubCategoryService
             throw $ex;
         }
     }
+
+    public function getSubCategoriesByCategoryId($params)
+    {
+        return SubCategory::where('category_id', $params['category_id'])
+        ->orderBy('name', 'ASC')
+        ->get();
+    }
 }

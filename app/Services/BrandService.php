@@ -69,4 +69,9 @@ class BrandService
             throw $ex;
         }
     }
+
+    public function getBrands()
+    {
+        return Brand::orderBy('name', 'ASC')->get();
+    }
 }

@@ -582,6 +582,16 @@ return [
                 ],
             ],
         ],
+        'JsBarcode' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.3/JsBarcode.all.min.js',
+                ],
+            ],
+        ],
     ],
 
     /*

@@ -15,7 +15,7 @@ class Product extends Model
         'slug',
         'short_description',
         'description',
-        'price',
+        'regular_price',
         'compare_price',
         'category_id',
         'sub_category_id',
@@ -25,8 +25,28 @@ class Product extends Model
         'status',
     ];
 
+    protected $casts = [
+        'publish' => 'boolean',
+        'is_featured' => 'boolean',
+    ];
+
     public function ProductVariants()
     {
         return $this->hasMany(ProductVariant::class);
+    }
+
+    public function setRegularPriceAttribute($value)
+    {
+        $this->attributes['regular_price'] = str_replace('.', '', $value);
+    }
+
+    public function setComparePriceAttribute($value)
+    {
+        $this->attributes['compare_price'] = str_replace('.', '', $value);
+    }
+
+    public function setBarcodeAttribute($value)
+    {
+        $this->attributes['barcode'] = str_replace(' ', '', $value);
     }
 }

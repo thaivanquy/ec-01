@@ -57,4 +57,9 @@ return [
     'image' => 'Image',
     'title' => 'Title',
     'short_description' => 'Short Description',
+    'sub_category' => 'Sub Category',
+    'brand' => 'Brand',
+    'barcode' => 'Barcode',
+    'price' => 'Price',
+    'price_sale' => 'Price Sale',
 ];
