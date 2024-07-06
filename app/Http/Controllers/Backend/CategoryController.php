@@ -9,6 +9,11 @@ use App\Http\Requests\Backend\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Services\CategoryService;
 use \Illuminate\Http\Response;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\CategoriesExport;
+use App\Imports\CategoriesImport;
+use App\Http\Requests\Backend\ImportCategoriesRequest;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
@@ -55,7 +60,7 @@ class CategoryController extends Controller
 
             return redirect(route('backend.categories.index'))->with('success', __('message.create_successed'));
         } catch (\Exception $ex) {
-            throw $ex;
+            Log::error($ex->getMessage());
 
             return redirect(route('backend.categories.index'))->with('error', __('message.create_failed'));
         }
@@ -102,7 +107,7 @@ class CategoryController extends Controller
 
             return redirect(route('backend.categories.detail', ['categoryInfo' => $categoryInfo]))->with('success', __('message.update_successed'));
         } catch (\Exception $ex) {
-            throw $ex;
+            Log::error($ex->getMessage());
 
             return redirect(route('backend.categories.detail', ['categoryInfo' => $categoryInfo]))->with('error', __('message.update_failed'));
         }
@@ -125,11 +130,52 @@ class CategoryController extends Controller
                 'message' => 'Success'
             ], Response::HTTP_OK);
         } catch (\Exception $ex) {
-            throw $ex;
+            Log::error($ex->getMessage());
 
             response()->json([
                 'message' => 'Error'
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function import(ImportCategoriesRequest $request)
+    {
+        try {
+            // $file = $request->file('file');
+            // $fileName = time() . '_' . $file->getClientOriginalName();
+            // $file->storeAs('public/file/', $fileName);
+
+            // $filePath = storage_path('app/public/file/' . $fileName);
+            Excel::import(new CategoriesImport, $request->file('file'));
+
+            return redirect(route('backend.categories.index'))->with('success', __('message.import_successed'));
+        } catch (\Exception $ex) {
+            Log::error($ex->getMessage());
+            
+            return redirect(route('backend.categories.index'))->with('error', $ex->getMessage());
+        }
+    }
+
+    public function export(Request $request)
+    {
+        try {
+            $page = $request->page ?? 1;
+            $per_page = $request->per_page ?? 10;
+            $keyword = $request->keyword ?? '';
+            $status = $request->status ?? '';
+    
+            $params = [
+                'page' => $page,
+                'per_page' => $per_page,
+                'keyword' => $keyword,
+                'status' => $status,
+            ];
+
+            return Excel::download(new CategoriesExport($params), 'categories.csv');
+        } catch (\Exception $ex) {
+            Log::error($ex->getMessage());
+
+            return redirect(route('backend.categories.index'))->with('error', __('message.export_failed'));
         }
     }
 }

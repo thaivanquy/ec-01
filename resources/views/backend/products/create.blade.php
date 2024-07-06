@@ -459,6 +459,8 @@
                 let html = renderHTML(attributes);
                 $('.attribute-body').append(html);
                 $(this).prop("disabled", true);
+                $('#table-attribue thead').html('');
+                $('#table-attribue tbody').html('');
                 disabledChooseAttributed();
                 removeButtonAttribute(attributes);
             });
@@ -594,6 +596,7 @@
                 if (attributeValue && Array.isArray(attributeValue)) {
                     const attrId = attributeValue.map(item => ({ [attributeId]: item.id }));
                     const attrVals = attributeValue.map(item => ({ [attributeText]: item.text }));
+                    console.log('attrVals', attrVals);
                     attributeTitle.push(attributeText);
                     attributes.push(attrVals);
                     variants.push(attrId);
@@ -609,11 +612,13 @@
                     (a,b) => a.flatMap(d => b.map(e => ({...d, ...e})))
                 )
 
-                $('.table-attribute').prop('hidden', false).html(createHeaderTable(attributeTitle));
-
+                if ($('.table-attribute thead').length === 0) {
+                    $('.table-attribute').prop('hidden', false).append(createHeaderTable(attributeTitle));
+                }
+                
                 attributes.forEach((item, index) => {
                     let row = createVariantRow(item, variants[index]);
-                    $('.table-attribute').find('thead').after(row);
+                    $('.table-attribute').find('#table-attribue tbody').append(row);
                 });
             } else {
                 $('.table-attribute').prop('hidden', true).html('');
@@ -633,7 +638,7 @@
                                     </span>
                                 </div>
                                 <div class="table-full-width table-responsive">
-                                    <table class="table table-hover">
+                                    <table class="table table-hover" id="table-attribue">
                                         <thead>
                                             <tr class="text-center">
                                                 <th>{{ __('title.image') }}</th>`
@@ -645,13 +650,13 @@
                                                 <th>SKU</th>
                                             </tr>
                                         </thead>
+                                        <tbody></tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>`
-            $('.table-attribute').append(header);
             return header;
         };
 
@@ -663,37 +668,35 @@
             let attributeId = Object.values(variantItem).join(', ');
             let classModified = attributeId.replace(/, /g, '-');
 
-            let tbody = `<tbody>
-                            <tr class="text-center">
-                                <td class="align-middle">
-                                    <div class="upload">
-                                        <div class="mb-3">
-                                            <img src="${noImg}" alt="no-img" width="70" height="70" class="avtPreview">
-                                        </div>
-                                        <div class="round">
-                                            <i class = "fa fa-camera" style = "color: #fff;"></i>
-                                            <input type="file" class="image" name="image[]" accept=".jpg, .jpeg, .png">    
-                                        </div>
+            let tbody = `<tr class="text-center variant-${classModified}">
+                            <td class="align-middle">
+                                <div class="upload">
+                                    <div class="mb-3">
+                                        <img src="${noImg}" alt="no-img" width="70" height="70" class="avtPreview">
                                     </div>
-                                </td>`
-                            Object.values(attributeItem).forEach(value => {
-                                tbody += `<td class="align-middle">${value}</td>`;
-                            });
-                        tbody +=`<td class="align-middle">
-                                    <input type="number" class="form-control" name="quantity[]" id="">
-                                </td>
-                                <td class="align-middle">
-                                    <input type="text" class="form-control format-price" name="price[]" id="" value="${$('input[name="compare_price"]').val() != 0 ? $('input[name="compare_price"]').val() : $('input[name="regular_price"]').val()}">
-                                </td>
-                                <td class="align-middle">
-                                    <input type="text" class="form-control" name="sku[]" id="" value="${$('.inputBarcode').val()}">
-                                </td>
-                                <td hidden>
-                                    <input type="text" name="name[]" value="${attributeName}">
-                                    <input type="text" name="id[]" value="${attributeId}">
-                                </td>
-                            </tr>
-                        </tbody>`
+                                    <div class="round">
+                                        <i class = "fa fa-camera" style = "color: #fff;"></i>
+                                        <input type="file" class="image" name="image[]" accept=".jpg, .jpeg, .png">    
+                                    </div>
+                                </div>
+                            </td>`
+                        Object.values(attributeItem).forEach(value => {
+                            tbody += `<td class="align-middle">${value}</td>`;
+                        });
+                    tbody +=`<td class="align-middle">
+                                <input type="number" class="form-control" name="quantity[]" id="">
+                            </td>
+                            <td class="align-middle">
+                                <input type="text" class="form-control format-price" name="price[]" id="" value="${$('input[name="compare_price"]').val() != 0 ? $('input[name="compare_price"]').val() : $('input[name="regular_price"]').val()}">
+                            </td>
+                            <td class="align-middle">
+                                <input type="text" class="form-control" name="sku[]" id="" value="${$('.inputBarcode').val()}">
+                            </td>
+                            <td hidden>
+                                <input type="text" name="name[]" value="${attributeName}">
+                                <input type="text" name="id[]" value="${attributeId}">
+                            </td>
+                        </tr>`
             return tbody;
         };
 

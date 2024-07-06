@@ -592,6 +592,16 @@ return [
                 ],
             ],
         ],
+        'bsCustomFileInput' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '//cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js',
+                ],
+            ],
+        ],
     ],
 
     /*

@@ -10,6 +10,7 @@ use App\Http\Requests\Backend\StoreSubCategoryRequest;
 use App\Http\Requests\Backend\UpdateSubCategoryRequest;
 use App\Models\SubCategory;
 use \Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class SubCategoryController extends Controller
 {
@@ -62,7 +63,7 @@ class SubCategoryController extends Controller
 
             return redirect(route('backend.subcategories.index'))->with('success', __('message.create_successed'));
         } catch (\Exception $ex) {
-            throw $ex;
+            Log::error($ex->getMessage());
 
             return redirect(route('backend.subcategories.index'))->with('error', __('message.create_failed'));
         }
@@ -111,7 +112,7 @@ class SubCategoryController extends Controller
 
             return redirect(route('backend.subcategories.detail', ['subcategoryInfo' => $subCategoryInfo]))->with('success', __('message.update_successed'));
         } catch (\Exception $ex) {
-            throw $ex;
+            Log::error($ex->getMessage());
 
             return redirect(route('backend.subcategories.detail', ['subcategoryInfo' => $subCategoryInfo]))->with('error', __('message.update_failed'));
         }
@@ -134,7 +135,7 @@ class SubCategoryController extends Controller
                 'message' => 'Success'
             ], Response::HTTP_OK);
         } catch (\Exception $ex) {
-            throw $ex;
+            Log::error($ex->getMessage());
 
             response()->json([
                 'message' => 'Error'
@@ -157,7 +158,7 @@ class SubCategoryController extends Controller
                 'data' => $html
             ], Response::HTTP_OK);
         } catch (\Exception $ex) {
-            throw $ex;
+            Log::error($ex->getMessage());
 
             response()->json([
                 'message' => 'Error'

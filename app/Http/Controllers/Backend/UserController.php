@@ -12,6 +12,7 @@ use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use \Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -79,7 +80,7 @@ class UserController extends Controller
 
             return redirect(route('backend.users.index'))->with('success', __('message.create_successed'));
         } catch (\Exception $ex) {
-            throw $ex;
+            Log::error($ex->getMessage());
 
             return redirect(route('backend.users.index'))->with('error', __('message.create_failed'));
         }
@@ -146,7 +147,7 @@ class UserController extends Controller
 
             return redirect(route('backend.users.detail', ['userInfo' => $userInfo]))->with('success', __('message.update_successed'));
         } catch (\Exception $ex) {
-            throw $ex;
+            Log::error($ex->getMessage());
 
             return redirect(route('backend.users.detail', ['userInfo' => $userInfo]))->with('error', __('message.update_failed'));
         }
@@ -169,7 +170,7 @@ class UserController extends Controller
                 'message' => 'Success'
             ], Response::HTTP_OK);
         } catch (\Exception $ex) {
-            throw $ex;
+            Log::error($ex->getMessage());
 
             response()->json([
                 'message' => 'Error'
@@ -200,7 +201,7 @@ class UserController extends Controller
                 'message' => 'Success'
             ], Response::HTTP_OK);
         } catch (\Exception $ex) {
-            throw $ex;
+            Log::error($ex->getMessage());
 
             response()->json([
                 'message' => 'Error'

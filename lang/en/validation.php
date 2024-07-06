@@ -25,4 +25,5 @@ return [
     ],
     'regex' => 'Please specify the correct format for :attribute.',
     'exists' => 'The selected :attribute is invalid.',
+    'alpha_dash' => 'For :attribute, alphabets, dashes (-), and underscores (_) can be used.',
 ];

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use \Illuminate\Http\Response;
 use App\Http\Requests\Backend\StoreBrandRequest;
 use App\Http\Requests\Backend\UpdateBrandRequest;
+use Illuminate\Support\Facades\Log;
 
 class BrandController extends Controller
 {
@@ -55,7 +56,7 @@ class BrandController extends Controller
 
             return redirect(route('backend.brands.index'))->with('success', __('message.create_successed'));
         } catch (\Exception $ex) {
-            throw $ex;
+            Log::error($ex->getMessage());
 
             return redirect(route('backend.brands.index'))->with('error', __('message.create_failed'));
         }
@@ -102,7 +103,7 @@ class BrandController extends Controller
 
             return redirect(route('backend.brands.detail', ['brandInfo' => $brandInfo]))->with('success', __('message.update_successed'));
         } catch (\Exception $ex) {
-            throw $ex;
+            Log::error($ex->getMessage());
 
             return redirect(route('backend.brands.detail', ['brandInfo' => $brandInfo]))->with('error', __('message.update_failed'));
         }
@@ -125,7 +126,7 @@ class BrandController extends Controller
                 'message' => 'Success'
             ], Response::HTTP_OK);
         } catch (\Exception $ex) {
-            throw $ex;
+            Log::error($ex->getMessage());
 
             response()->json([
                 'message' => 'Error'

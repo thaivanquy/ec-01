@@ -62,4 +62,5 @@ return [
     'barcode' => 'Barcode',
     'price' => 'Price',
     'price_sale' => 'Price Sale',
+    'export' => 'Export CSV',
 ];

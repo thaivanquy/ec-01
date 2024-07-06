@@ -39,6 +39,15 @@
                 </div>
             </div>
             <div class="col-sm-6 d-flex justify-content-end">
+                <a href="javascipt::void(0)" class="btn bg-gray mr-3" data-toggle="modal" data-target="#importModal">Import CSV</a>
+                <a href="{!! route('backend.categories.export', [
+                    'page' => \Request::input('page'),
+                    'per_page' => \Request::input('per_page'),
+                    'keyword' => \Request::input('keyword'),
+                    'status' => \Request::input('status'),
+                ]) !!}" class="btn bg-lightblue mr-3 {{ $categories->count() ? '' : 'disabled' }}">
+                    {{ __('title.export') }}
+                </a>
                 <a href="{{ route('backend.categories.create') }}" class="btn btn-success">Add New</i></a>
             </div>
         </div>
@@ -89,6 +98,37 @@
         </div>
     </div>
 </div>
+<!-- Import Modal -->
+<form action="{{ route('backend.categories.import') }}" method="POST" enctype="multipart/form-data">
+    @csrf
+    <div class="modal fade" id="importModal" tabindex="-1">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title">Modal Import CSV</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span>&times;</span>
+            </button>
+            </div>
+                <div class="modal-body">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input @error('file') is-invalid @enderror" name="file" id="customFile" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                        <label class="custom-file-label" for="customFile">Choose file</label>
+                        @error('file')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary importCSV">Import CSV</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 @endsection
 @section('css')
     <style type="text/css">
@@ -97,6 +137,12 @@
 @endsection
 @section('js')
     <script type="text/javascript">
+        // Import File CSV
+        bsCustomFileInput.init()
+        @if ($errors->any())
+            $('#importModal').modal('show');
+        @endif
+
         $(document).on('change', '.changeSubmit', function() {
             $('#formSubmit').submit();
         });

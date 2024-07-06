@@ -66,6 +66,8 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['web',
             Route::get('/edit/{categoryInfo}', [CategoryController::class, 'edit'])->name('edit');
             Route::post('/update/{categoryInfo}', [CategoryController::class, 'update'])->name('update');
             Route::post('/delete/{categoryInfo}', [CategoryController::class, 'delete'])->name('delete');
+            Route::post('/import', [CategoryController::class, 'import'])->name('import');
+            Route::get('/export', [CategoryController::class, 'export'])->name('export');
         });
 
         Route::group([
