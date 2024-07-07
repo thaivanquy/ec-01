@@ -39,6 +39,14 @@
                 </div>
             </div>
             <div class="col-sm-6 d-flex justify-content-end">
+                <a href="{!! route('backend.users.export', [
+                    'page' => \Request::input('page'),
+                    'per_page' => \Request::input('per_page'),
+                    'keyword' => \Request::input('keyword'),
+                    'role_id' => \Request::input('role_id'),
+                ]) !!}" class="btn bg-lightblue mr-3 {{ $users->count() ? '' : 'disabled' }}">
+                    {{ __('title.export') }}
+                </a>
                 <a href="{{ route('backend.users.create') }}" class="btn btn-success">Add New</a>
             </div>
         </div>

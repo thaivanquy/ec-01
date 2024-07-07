@@ -13,6 +13,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use \Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -206,6 +208,29 @@ class UserController extends Controller
             response()->json([
                 'message' => 'Error'
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function export(Request $request)
+    {
+        try {
+            $page = $request->page ?? 1;
+            $per_page = $request->per_page ?? 10;
+            $keyword = $request->keyword ?? '';
+            $role_id = $request->role_id ?? '';
+    
+            $params = [
+                'page' => $page,
+                'per_page' => $per_page,
+                'keyword' => $keyword,
+                'role_id' => $role_id,
+            ];
+
+            return Excel::download(new UsersExport($params), 'users.csv');
+        } catch (\Exception $ex) {
+            Log::error($ex->getMessage());
+
+            return redirect(route('backend.users.index'))->with('error', __('message.export_failed'));
         }
     }
 }

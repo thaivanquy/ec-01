@@ -53,6 +53,7 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['web',
             Route::post('/update/{userInfo}', [UserController::class, 'update'])->name('update');
             Route::post('/delete/{userInfo}', [UserController::class, 'delete'])->name('delete');
             Route::post('/change-publish', [UserController::class, 'changePublish'])->name('changePublish');
+            Route::get('/export', [UserController::class, 'export'])->name('export');
         });
 
         Route::group([
