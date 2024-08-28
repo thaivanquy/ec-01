@@ -16,6 +16,7 @@ class SubCategoryController extends Controller
 {
     public function index(Request $request)
     {
+        $item = config('common.pagination.limit.default');
         $page = $request->page ?? 1;
         $per_page = $request->per_page ?? 10;
         $keyword = $request->keyword ?? '';
@@ -33,6 +34,15 @@ class SubCategoryController extends Controller
         $categories = CategoryService::getInstance()->getNameCategory();
         $subCategories = SubCategoryService::getInstance()->getList($params);
         $subCategories->appends($request->all());
+
+        if ($subCategories->total() > 0) {
+            $maxPage = ceil($subCategories->total() / $item);
+            if ($maxPage < $page) {
+                return redirect(route('backend.subcategories.index', [
+                    'page' => $maxPage,
+                ]));
+            }   
+        }
 
         return view('backend.subcategories.index', compact('subCategories', 'categories'));
     }

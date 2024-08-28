@@ -19,6 +19,7 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
+        $item = config('common.pagination.limit.default');
         $page = $request->page ?? 1;
         $per_page = $request->per_page ?? 10;
         $keyword = $request->keyword ?? '';
@@ -33,6 +34,15 @@ class CategoryController extends Controller
 
         $categories = CategoryService::getInstance()->getList($params);
         $categories->appends($request->all());
+
+        if ($categories->total() > 0) {
+            $maxPage = ceil($categories->total() / $item);
+            if ($maxPage < $page) {
+                return redirect(route('backend.categories.index', [
+                    'page' => $maxPage,
+                ]));
+            }   
+        }
 
         return view('backend.categories.index', compact('categories'));
     }

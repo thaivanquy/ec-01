@@ -49,6 +49,7 @@
     </div>
 </div>
 <div>
+    <a href="{{ route('backend.categories.edit', $category->id) }}" class="btn btn-sm btn-warning mr-2">Edit</a>
     <a href="{{ route('backend.categories.index') }}" class="btn btn-sm bg-navy mr-2">Back</a>
 </div>
 @endsection

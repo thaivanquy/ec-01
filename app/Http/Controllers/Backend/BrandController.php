@@ -15,6 +15,7 @@ class BrandController extends Controller
 {
     public function index(Request $request)
     {
+        $item = config('common.pagination.limit.default');
         $page = $request->page ?? 1;
         $per_page = $request->per_page ?? 10;
         $keyword = $request->keyword ?? '';
@@ -29,6 +30,15 @@ class BrandController extends Controller
 
         $brands = BrandService::getInstance()->getList($params);
         $brands->appends($request->all());
+
+        if ($brands->total() > 0) {
+            $maxPage = ceil($brands->total() / $item);
+            if ($maxPage < $page) {
+                return redirect(route('backend.brands.index', [
+                    'page' => $maxPage,
+                ]));
+            }   
+        }
 
         return view('backend.brands.index', compact('brands'));
     }

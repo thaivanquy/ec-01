@@ -20,6 +20,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
+        $item = config('common.pagination.limit.default');
         $page = $request->page ?? 1;
         $per_page = $request->per_page ?? 10;
         $keyword = $request->keyword ?? '';
@@ -34,6 +35,15 @@ class UserController extends Controller
 
         $users = UserService::getInstance()->getList($params);
         $users->appends($request->all());
+
+        if ($users->total() > 0) {
+            $maxPage = ceil($users->total() / $item);
+            if ($maxPage < $page) {
+                return redirect(route('backend.users.index', [
+                    'page' => $maxPage,
+                ]));
+            }   
+        }
 
         return view('backend.users.index', compact('users'));
     }

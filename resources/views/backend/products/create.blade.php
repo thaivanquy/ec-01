@@ -508,6 +508,7 @@
             let _this = $(this);
             _this.parents('.attribute-item').remove();
             removeButtonAttribute(attributes);
+            $('#table-attribue tbody').html('');
             createListAtrribute();
         });
         
@@ -581,11 +582,13 @@
 
         // The event take all value of the attribute
         $(document).on('change', '.selectAttribute', function(e){
+            $('#table-attribue thead').html('');
+            $('#table-attribue tbody').html('');
             createListAtrribute();
         });
 
         const createListAtrribute = () => {
-            let attributes = [];
+            let attributeVals = [];
             let variants = [];
             let attributeTitle = [];
             $('.attribute-item').each(function () {
@@ -596,15 +599,14 @@
                 if (attributeValue && Array.isArray(attributeValue)) {
                     const attrId = attributeValue.map(item => ({ [attributeId]: item.id }));
                     const attrVals = attributeValue.map(item => ({ [attributeText]: item.text }));
-                    console.log('attrVals', attrVals);
                     attributeTitle.push(attributeText);
-                    attributes.push(attrVals);
+                    attributeVals.push(attrVals);
                     variants.push(attrId);
                 }
             });
 
-            if (attributes.length > 0) {
-                attributes = attributes.reduce(
+            if (attributeVals.length > 0) {
+                attributeVals = attributeVals.reduce(
                     (a,b) => a.flatMap(d => b.map(e => ({...d, ...e})))
                 )
 
@@ -616,7 +618,7 @@
                     $('.table-attribute').prop('hidden', false).append(createHeaderTable(attributeTitle));
                 }
                 
-                attributes.forEach((item, index) => {
+                attributeVals.forEach((item, index) => {
                     let row = createVariantRow(item, variants[index]);
                     $('.table-attribute').find('#table-attribue tbody').append(row);
                 });
@@ -662,8 +664,6 @@
 
         // CREATE ROW TABLE VARRIANT
         const createVariantRow = (attributeItem, variantItem) => {
-            console.log('attributeItem', attributeItem);
-            console.log('variantItem', variantItem);
             let attributeName = Object.values(attributeItem).join(', ');
             let attributeId = Object.values(variantItem).join(', ');
             let classModified = attributeId.replace(/, /g, '-');

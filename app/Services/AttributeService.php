@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Services\Traits\ServiceSingleton;
 use DB;
-use App\Models\Store;
+use App\Models\Attribute;
 
 class AttributeService
 {
@@ -12,7 +12,7 @@ class AttributeService
 
     public function getAllAttribute()
     {
-        // return Attribute::select('id', 'name')->get();
+        return Attribute::select('id', 'name')->get();
     }
 
 }

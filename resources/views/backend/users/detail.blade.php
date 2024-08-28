@@ -143,6 +143,7 @@
     </div>
 </div>
 <div>
+    <a href="{{ route('backend.users.edit', $user->id) }}" class="btn btn-sm btn-warning mr-2">Edit</a>
     <a href="{{ route('backend.users.index') }}" class="btn btn-sm bg-navy mr-2">Back</a>
 </div>
 @endsection

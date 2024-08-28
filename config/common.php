@@ -22,4 +22,9 @@ return [
         0 => 'no',
         1 => 'yes',
     ],
+    'pagination' => [
+        'limit' => [
+            'default' => 10,
+        ]
+    ]
 ];
