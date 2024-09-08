@@ -123,13 +123,11 @@
                             <h5>Product Attributes</h5>
                             <span class="font-italic">Allows you to sell products with different attributes, for example clothes in different <strong class="text-danger">colors</strong> and <strong class="text-danger">sizes</strong>. Each attribute will be a line in the version list below.</span>
                             <hr/>
-                            <div>
-                                <input type="checkbox" name="accept" id="attributeCheckbox" value="" class="turnOnAttribute"> 
-                                <label for="attributeCheckbox" class="ml-2">This product has many attributes.</label>
-                            </div>
+                            <input type="checkbox" name="is_attribute" id="is_attribute" value="1" {{ old('is_attribute') ? 'checked' : '' }} />
+                            <label for="is_attribute" class="ml-2">This product has many attributes.</label>
                         </div>
                     </div>
-                    <div class="attribute-wrapper" hidden>
+                    <div class="attribute-wrapper" style="display: {!! old('is_attribute') ? 'inline' : 'none' !!};">
                         <div class="row mt-2">
                             <div class="col-md-4">
                                 <span class="text-info">Select Attributes</span>
@@ -429,10 +427,11 @@
         });
 
         //Turn On Atrribute
-        if ($('.turnOnAttribute').length) {
-            $(document).on('change', '.turnOnAttribute', function(e){
+        if ($('#is_attribute').length) {
+            $(document).on('click', '#is_attribute', function(e){
                 let price = $('input[name="regular_price"]').val();
                 let barcode = $('input[name="barcode"]').val(); 
+                
                 if (price == '' || barcode == '') {
                     Swal.fire({
                         icon: "error",
@@ -444,10 +443,10 @@
                     return false;
                 }
 
-                if ($('.turnOnAttribute:checked').length !== 0) {
-                    $('.attribute-wrapper').removeAttr('hidden');
+                if ($('#is_attribute').prop('checked')) {
+                    $('.attribute-wrapper').css('display', 'inline');
                 } else {
-                    $('.attribute-wrapper').attr("hidden", true);
+                    $('.attribute-wrapper').css('display', 'none');
                 }
             });
         }
@@ -459,8 +458,6 @@
                 let html = renderHTML(attributes);
                 $('.attribute-body').append(html);
                 $(this).prop("disabled", true);
-                $('#table-attribue thead').html('');
-                $('#table-attribue tbody').html('');
                 disabledChooseAttributed();
                 removeButtonAttribute(attributes);
             });
@@ -493,10 +490,9 @@
             let _this = $(this);
             let attributeId = _this.val();
             if (attributeId != '') {
-                _this.parents('.col-md-3').siblings('.col-md-8').html(select2Attribute(attributeId));
-                $('.selectAttribute').each(function() {
-                    getSelect2($(this));
-                });
+                const selectAtt = $(select2Attribute(attributeId));
+                _this.parents('.col-md-3').siblings('.col-md-8').html(selectAtt);
+                getSelect2(selectAtt);
             } else {
                 _this.parents('.col-md-3').siblings('.col-md-8').html('<input type="text" disabled="" class="form-control">');
             }
@@ -508,26 +504,35 @@
             let _this = $(this);
             _this.parents('.attribute-item').remove();
             removeButtonAttribute(attributes);
-            $('#table-attribue tbody').html('');
             createListAtrribute();
         });
         
         const disabledChooseAttributed = () => {
             let selectedValues = [];
-            $('.choose-attribute').each(function(e) {
-                let _this = $(this);
-                let selected = _this.find('option:selected').val();
-                if (selected != "") {
+            let chooseAttributed = $('div').find('.choose-attribute');
+
+            chooseAttributed.each(function () {
+                let selected = $(this).find('option:selected').val();
+                if (selected !== "") {
                     selectedValues.push(selected);
                 }
             });
 
-            selectedValues.forEach(function(e) {
-                $('.choose-attribute').find(`option[value="${e}"]`).prop('disabled', true);
+            chooseAttributed.each(function () {
+                let options = $(this).find('option');
+
+                options.each(function () {
+                    let option = $(this);
+                    if (selectedValues.includes(option.val()) && !option.is(':selected')) {
+                        option.prop('disabled', true);
+                    } else {
+                        option.prop('disabled', false);
+                    }
+                });
             });
 
-            $('.niceSelect').niceSelect('destroy'); 
-            $('.niceSelect').niceSelect(); 
+            $('.niceSelect').niceSelect('destroy');
+            $('.niceSelect').niceSelect();
         };
 
         //Check if item of attribute > attributes in databse then remove button add attribute
@@ -582,8 +587,6 @@
 
         // The event take all value of the attribute
         $(document).on('change', '.selectAttribute', function(e){
-            $('#table-attribue thead').html('');
-            $('#table-attribue tbody').html('');
             createListAtrribute();
         });
 
@@ -591,11 +594,13 @@
             let attributeVals = [];
             let variants = [];
             let attributeTitle = [];
+
             $('.attribute-item').each(function () {
                 let _this = $(this);
                 let attributeId = _this.find('.choose-attribute option:selected').val();
                 let attributeText = _this.find('.choose-attribute option:selected').text();
                 let attributeValue = $(`.attribute-${attributeId}`).select2('data');
+
                 if (attributeValue && Array.isArray(attributeValue)) {
                     const attrId = attributeValue.map(item => ({ [attributeId]: item.id }));
                     const attrVals = attributeValue.map(item => ({ [attributeText]: item.text }));
@@ -613,10 +618,8 @@
                 variants = variants.reduce(
                     (a,b) => a.flatMap(d => b.map(e => ({...d, ...e})))
                 )
-
-                if ($('.table-attribute thead').length === 0) {
-                    $('.table-attribute').prop('hidden', false).append(createHeaderTable(attributeTitle));
-                }
+                
+                $('.table-attribute').html(createHeaderTable(attributeTitle));
                 
                 attributeVals.forEach((item, index) => {
                     let row = createVariantRow(item, variants[index]);
