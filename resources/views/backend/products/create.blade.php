@@ -460,6 +460,7 @@
                 $(this).prop("disabled", true);
                 disabledChooseAttributed();
                 removeButtonAttribute(attributes);
+                saveAttributesToLocalStorage();
             });
         }
 
@@ -497,6 +498,7 @@
                 _this.parents('.col-md-3').siblings('.col-md-8').html('<input type="text" disabled="" class="form-control">');
             }
             disabledChooseAttributed();
+            saveAttributesToLocalStorage();
         });
 
         //The event delete attribute
@@ -505,6 +507,7 @@
             _this.parents('.attribute-item').remove();
             removeButtonAttribute(attributes);
             createListAtrribute();
+            saveAttributesToLocalStorage();
         });
         
         const disabledChooseAttributed = () => {
@@ -588,6 +591,7 @@
         // The event take all value of the attribute
         $(document).on('change', '.selectAttribute', function(e){
             createListAtrribute();
+            saveAttributesToLocalStorage();
         });
 
         const createListAtrribute = () => {
@@ -823,5 +827,56 @@
             $(this).val(formattedValue);
 
         });
+
+        const saveAttributesToLocalStorage = () => {
+            let attributesData = [];
+
+            $('.attribute-item').each(function () {
+                let attributeId = $(this).find('.choose-attribute').val();
+                let attributeValueId = $(this).find('.selectAttribute').val();
+                let attributeValueText = $(this).find('.selectAttribute option:selected').text().split(/(?=[A-Z])/);
+
+                if (attributeId && attributeValueId && attributeValueText) {
+                    attributesData.push({
+                        id: attributeId,
+                        values: {
+                            id: attributeValueId,
+                            text: attributeValueText
+                        }
+                    });
+                }
+            });
+
+            localStorage.setItem('productAttributes', JSON.stringify(attributesData));
+        };
+
+        if ($('#is_attribute').prop('checked')) {
+            let attributesData = JSON.parse(localStorage.getItem('productAttributes'));
+
+            if (attributesData) {
+                const attributeBody = $('.attribute-body');
+
+                attributesData.forEach(attribute => {
+                    let html = renderHTML(attributes);
+                    attributeBody.append(html);
+                    attributeBody.find('.choose-attribute').last().val(attribute.id).trigger('change');
+                    const selectedAttributeValues =  attributeBody.find('.selectAttribute').last();
+
+                    attribute.values.id.forEach((id, index) => {
+                        const text = attribute.values.text[index];
+                        const newOption = new Option(text, id, false, false);
+                        selectedAttributeValues.append(newOption);
+                    });
+
+                    selectedAttributeValues.val(attribute.values.id).trigger('change');
+                });
+
+                $('.niceSelect').niceSelect('destroy');
+                $('.niceSelect').niceSelect();
+
+                disabledChooseAttributed();
+                removeButtonAttribute(attributes);
+            }
+        }
     </script>
 @endsection
