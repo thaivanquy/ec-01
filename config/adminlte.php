@@ -602,6 +602,16 @@ return [
                 ],
             ],
         ],
+        'jqueryValidation' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '//cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js',
+                ],
+            ],
+        ],
     ],
 
     /*

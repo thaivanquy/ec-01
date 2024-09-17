@@ -14,7 +14,7 @@
         ]
     ],
 ])
-<form action="{{ route('backend.products.store') }}" method="POST">
+<form action="{{ route('backend.products.store') }}" method="POST" id="formProduct">
     @csrf
     <div class="row">
         <div class="col-md-8">
@@ -366,6 +366,7 @@
 @endsection
 @section('js')
     <script type="text/javascript">
+        setValidate();
         //Generated Barcode
         const formatBarcode = (barcodeVal) => {
             return barcodeVal.substring(0, 1) + " " + barcodeVal.substring(1, 7) + " " + barcodeVal.substring(7);
@@ -877,6 +878,49 @@
                 disabledChooseAttributed();
                 removeButtonAttribute(attributes);
             }
+        }
+
+        function setValidate() {
+            $("#formProduct").validate({
+                rules: {
+                    "quantity[]": {
+                        required: true,
+                        number: true,
+                        min: 1
+                    },
+                    "price[]": {
+                        required: true,
+                        number: true,
+                        min: 0
+                    },
+                    "sku[]": {
+                        required: true,
+                        minlength: 3
+                    }
+                },
+                messages: {
+                    "quantity[]": {
+                        required: "Quantity is required",
+                        number: "Please enter a valid number",
+                        min: "Quantity must be at least 1"
+                    },
+                    "price[]": {
+                        required: "Price is required",
+                        number: "Please enter a valid price",
+                        min: "Price cannot be negative"
+                    },
+                    "sku[]": {
+                        required: "SKU is required",
+                        minlength: "SKU must be at least 3 characters long"
+                    }
+                },
+                highlight: function (element) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
         }
     </script>
 @endsection
